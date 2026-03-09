@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇宙科普网站 - 太阳系八大行星</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/v4-shims.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        cosmic: '#0f172a',
+                        nebula: '#7c3aed',
+                        starlight: '#fbbf24',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        orbitron: ['Orbitron', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'rotate-slow': 'rotate-slow 20s linear infinite',
+                        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)' },
+                            '100%': { boxShadow: '0 0 40px rgba(99, 102, 241, 0.8)' },
+                        },
+                        'rotate-slow': {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: '0.7' },
+                            '50%': { opacity: '1' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+        
+        @layer utilities {
+            .glass-effect {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .glass-effect-dark {
+                background: rgba(15, 23, 42, 0.8);
+                backdrop-filter: blur(15px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .planet-card {
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                transition: all 0.3s ease;
+            }
+            .planet-card:hover {
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+            }
+            .text-gradient {
+                background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .nebula-bg {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #312e81 50%, #7c3aed 75%, #8b5cf6 100%);
+                background-size: 400% 400%;
+                animation: gradient-shift 15s ease infinite;
+            }
+            @keyframes gradient-shift {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            .star-field {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                background: 
+                    radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                    radial-gradient(2px 2px at 160px 30px, #ddd, transparent),
+                    radial-gradient(1px 1px at 190px 50px, rgba(255,255,255,0.4), transparent);
+                background-repeat: repeat;
+                background-size: 200px 100px;
+                animation: twinkle 10s ease-in-out infinite;
+            }
+            @keyframes twinkle {
+                0%, 100% { opacity: 0.8; }
+                50% { opacity: 0.4; }
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-cosmic text-white overflow-x-hidden">
+    <!-- 星空背景 -->
+    <div class="star-field"></div>
+    <div class="nebula-bg fixed inset-0 z-0"></div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-effect-dark">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-rocket text-3xl text-starlight animate-pulse-glow"></i>
+                    <h1 class="text-2xl font-orbitron font-bold text-gradient">宇宙科普</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="hover:text-starlight transition-colors duration-300">首页</a>
+                    <a href="#planets" class="hover:text-starlight transition-colors duration-300">行星介绍</a>
+                    <a href="#solar-system" class="hover:text-starlight transition-colors duration-300">太阳系</a>
+                    <a href="#exploration" class="hover:text-starlight transition-colors duration-300">探测历史</a>
+                </div>
+                <button class="md:hidden text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首页英雄区域 -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="text-center z-10">
+            <h1 class="text-6xl md:text-8xl font-orbitron font-bold text-gradient mb-6 animate-float">
+                太阳系八大行星
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                探索浩瀚宇宙中的八大行星，了解它们的神秘面纱与科学奥秘
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="scrollToSection('planets')" class="px-8 py-4 bg-primary hover:bg-primary/80 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 animate-glow">
+                    <i class="fas fa-globe-americas mr-2"></i>
+                    开始探索
+                </button>
+                <button onclick="scrollToSection('solar-system')" class="px-8 py-4 glass-effect hover:bg-white/20 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-sun mr-2"></i>
+                    太阳系概览
+                </button>
+            </div>
+        </div>
+        
+        <!-- 旋转的地球模型 -->
+        <div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-64 h-64 opacity-30 animate-rotate-slow">
+            <img src="https://aka.doubaocdn.com/s/hkgB1w5fWw" alt="地球" class="w-full h-full object-cover rounded-full">
+        </div>
+    </section>
+
+    <!-- 行星介绍区域 -->
+    <section id="planets" class="py-20 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-orbitron font-bold text-gradient mb-6">太阳系八大行星</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    从距离太阳最近的水星到最遥远的海王星，每颗行星都有着独特的特征和科学价值
+                </p>
+            </div>
+
+            <!-- 行星卡片网格 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 水星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('mercury')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/YQfR1w5fWw" alt="水星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-starlight text-cosmic px-3 py-1 rounded-full text-sm font-semibold">
+                            距离太阳最近
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-starlight">水星</h3>
+                    <p class="text-gray-300 mb-4">太阳系中最小的行星，表面布满陨石坑，昼夜温差极大</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-half mr-1"></i> 427°C / -170°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 88天公转</span>
+                    </div>
+                </div>
+
+                <!-- 金星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('venus')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/D8Mj1w5fWu" alt="金星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            最热行星
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-orange-400">金星</h3>
+                    <p class="text-gray-300 mb-4">地球的"姐妹行星"，拥有太阳系最强的温室效应</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-full mr-1"></i> 465°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 225天公转</span>
+                    </div>
+                </div>
+
+                <!-- 地球 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('earth')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/hkgB1w5fWw" alt="地球" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            生命星球
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-blue-400">地球</h3>
+                    <p class="text-gray-300 mb-4">目前已知唯一存在生命的行星，71%表面被海洋覆盖</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-half mr-1"></i> 14°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 365天公转</span>
+                    </div>
+                </div>
+
+                <!-- 火星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('mars')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/EOdw1w5fWv" alt="火星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            红色星球
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-red-400">火星</h3>
+                    <p class="text-gray-300 mb-4">被称为"红色星球"，是人类最有可能移居的行星</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-empty mr-1"></i> -63°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 687天公转</span>
+                    </div>
+                </div>
+
+                <!-- 木星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('jupiter')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/qEsi1w5fWy" alt="木星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-yellow-500 text-cosmic px-3 py-1 rounded-full text-sm font-semibold">
+                            巨行星
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-yellow-400">木星</h3>
+                    <p class="text-gray-300 mb-4">太阳系最大行星，拥有著名的大红斑风暴</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-empty mr-1"></i> -145°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 12年公转</span>
+                    </div>
+                </div>
+
+                <!-- 土星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('saturn')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/GmfU1w5fWu" alt="土星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            光环行星
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-purple-400">土星</h3>
+                    <p class="text-gray-300 mb-4">拥有太阳系最美丽的行星环，密度比水还小</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-empty mr-1"></i> -180°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 30年公转</span>
+                    </div>
+                </div>
+
+                <!-- 天王星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('uranus')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/fZhV1w5fXI" alt="天王星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-cyan-500 text-cosmic px-3 py-1 rounded-full text-sm font-semibold">
+                            冰巨星
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-cyan-400">天王星</h3>
+                    <p class="text-gray-300 mb-4">横躺着公转的行星，拥有独特的蓝绿色外观</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-empty mr-1"></i> -220°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 84年公转</span>
+                    </div>
+                </div>
+
+                <!-- 海王星 -->
+                <div class="planet-card rounded-2xl p-6 cursor-pointer" onclick="openPlanetModal('neptune')">
+                    <div class="relative mb-6">
+                        <img src="https://aka.doubaocdn.com/s/Jex11w5fXH" alt="海王星" class="w-full h-48 object-cover rounded-xl">
+                        <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            最远行星
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-orbitron font-bold mb-3 text-blue-400">海王星</h3>
+                    <p class="text-gray-300 mb-4">太阳系最遥远的行星，拥有超强的风暴</p>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span><i class="fas fa-thermometer-empty mr-1"></i> -218°C</span>
+                        <span><i class="fas fa-clock mr-1"></i> 165年公转</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 太阳系概览 -->
+    <section id="solar-system" class="py-20 relative z-10 bg-black/30">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-orbitron font-bold text-gradient mb-6">太阳系概览</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    太阳系是一个受太阳引力约束在一起的行星系统，包括太阳和直接或间接围绕太阳运动的天体
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-2xl font-orbitron font-bold mb-4 text-starlight">太阳系结构</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-center"><i class="fas fa-sun text-starlight mr-3"></i> 太阳：太阳系的中心恒星</li>
+                            <li class="flex items-center"><i class="fas fa-globe-americas text-gray-400 mr-3"></i> 类地行星：水星、金星、地球、火星</li>
+                            <li class="flex items-center"><i class="fas fa-ring text-purple-400 mr-3"></i> 小行星带：位于火星和木星之间</li>
+                            <li class="flex items-center"><i class="fas fa-bullseye text-yellow-400 mr-3"></i> 气态巨行星：木星、土星</li>
+                            <li class="flex items-center"><i class="fas fa-snowflake text-cyan-400 mr-3"></i> 冰巨星：天王星、海王星</li>
+                            <li class="flex items-center"><i class="fas fa-asteroid text-gray-500 mr-3"></i> 柯伊伯带：海王星轨道外的天体区域</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-2xl font-orbitron font-bold mb-4 text-accent">太阳系形成</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            太阳系大约在46亿年前由一片巨大的分子云坍缩形成。太阳占据了太阳系总质量的99.86%，
+                            剩余的质量形成了行星、卫星、小行星和彗星等天体。八大行星按照与太阳的距离由近及远排列，
+                            展现了从岩石质类地行星到气态巨行星再到冰巨星的演化序列。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="glass-effect p-8 rounded-2xl">
+                        <h3 class="text-2xl font-orbitron font-bold mb-6 text-center text-gradient">行星距离对比</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-starlight">水星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-starlight h-2 rounded-full" style="width: 3.2%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">5790万公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-orange-400">金星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-orange-400 h-2 rounded-full" style="width: 5.8%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">1.08亿公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-blue-400">地球</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-blue-400 h-2 rounded-full" style="width: 8.3%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">1.5亿公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-red-400">火星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-red-400 h-2 rounded-full" style="width: 12.5%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">2.28亿公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-yellow-400">木星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-yellow-400 h-2 rounded-full" style="width: 41.7%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">7.78亿公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-purple-400">土星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-purple-400 h-2 rounded-full" style="width: 75%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">14.3亿公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-cyan-400">天王星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-cyan-400 h-2 rounded-full" style="width: 150%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">28.7亿公里</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-blue-400">海王星</span>
+                                <div class="flex-1 mx-4 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-blue-400 h-2 rounded-full" style="width: 250%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">45亿公里</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 探测历史 -->
+    <section id="exploration" class="py-20 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-orbitron font-bold text-gradient mb-6">行星探测历史</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    人类对太阳系行星的探索历程，从早期的天文观测到现代的空间探测器
+                </p>
+            </div>
+
+            <div class="relative">
+                <!-- 时间线 -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-primary to-secondary"></div>
+                
+                <div class="space-y-12">
+                    <!-- 古代观测 -->
+                    <div class="flex items-center justify-between">
+                        <div class="w-5/12 glass-effect p-6 rounded-xl mr-8">
+                            <h3 class="text-2xl font-orbitron font-bold mb-3 text-starlight">古代天文观测</h3>
+                            <p class="text-gray-300 mb-4">
+                                古代文明通过肉眼观测发现了水星、金星、火星、木星和土星，
+                                并将这些天体与神话传说联系起来。中国古代将五行学说与行星对应。
+                            </p>
+                            <span class="text-sm text-gray-400">公元前1000年 - 公元1600年</span>
+                        </div>
+                        <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-starlight rounded-full border-4 border-cosmic"></div>
+                        <div class="w-5/12"></div>
+                    </div>
+
+                    <!-- 望远镜时代 -->
+                    <div class="flex items-center justify-between">
+                        <div class="w-5/12"></div>
+                        <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-accent rounded-full border-4 border-cosmic"></div>
+                        <div class="w-5/12 glass-effect p-6 rounded-xl ml-8">
+                            <h3 class="text-2xl font-orbitron font-bold mb-3 text-accent">望远镜时代</h3>
+                            <p class="text-gray-300 mb-4">
+                                1609年伽利略发明望远镜后，人类首次观测到了月球表面、木星的四颗卫星，
+                                以及金星的相位变化，为日心说提供了有力证据。
+                            </p>
+                            <span class="text-sm text-gray-400">1609年 - 1957年</span>
+                        </div>
+                    </div>
+
+                    <!-- 太空时代 -->
+                    <div class="flex items-center justify-between">
+                        <div class="w-5/12 glass-effect p-6 rounded-xl mr-8">
+                            <h3 class="text-2xl font-orbitron font-bold mb-3 text-primary">太空探测时代</h3>
+                            <p class="text-gray-300 mb-4">
+                                1957年苏联发射第一颗人造卫星斯普特尼克1号，开启了太空探测时代。
+                                此后各国陆续发射了大量行星探测器，对太阳系进行了详细探测。
+                            </p>
+                            <span class="text-sm text-gray-400">1957年 - 现在</span>
+                        </div>
+                        <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full border-4 border-cosmic"></div>
+                        <div class="w-5/12"></div>
+                    </div>
+
+                    <!-- 未来探索 -->
+                    <div class="flex items-center justify-between">
+                        <div class="w-5/12"></div>
+                        <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-secondary rounded-full border-4 border-cosmic"></div>
+                        <div class="w-5/12 glass-effect p-6 rounded-xl ml-8">
+                            <h3 class="text-2xl font-orbitron font-bold mb-3 text-secondary">未来探索计划</h3>
+                            <p class="text-gray-300 mb-4">
+                                未来人类计划开展更多雄心勃勃的探测任务，包括火星样本返回、
+                                木星冰卫星探测、天王星和海王星轨道器等，将进一步揭开太阳系的奥秘。
+                            </p>
+                            <span class="text-sm text-gray-400">2025年 - 2050年</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="py-12 glass-effect-dark relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <i class="fas fa-rocket text-3xl text-starlight"></i>
+                    <h3 class="text-2xl font-orbitron font-bold text-gradient">宇宙科普网站</h3>
+                </div>
+                <p class="text-gray-400 mb-6">探索浩瀚宇宙，了解太阳系八大行星的科学奥秘</p>
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="#" class="text-gray-400 hover:text-starlight transition-colors duration-300">
+                        <i class="fab fa-twitter text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-starlight transition-colors duration-300">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-starlight transition-colors duration-300">
+                        <i class="fab fa-youtube text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-starlight transition-colors duration-300">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm">
+                    © 2025 宇宙科普网站. 基于最新科学研究数据制作.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 行星详情模态框 -->
+    <div id="planetModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="glass-effect-dark p-8 rounded-2xl max-w-4xl w-full mx-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modalTitle" class="text-3xl font-orbitron font-bold text-gradient"></h2>
+                <button onclick="closePlanetModal()" class="text-2xl text-gray-400 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <img id="modalImage" src="" alt="" class="w-full h-80 object-cover rounded-xl mb-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-effect p-4 rounded-xl text-center">
+                            <i class="fas fa-thermometer-half text-2xl text-starlight mb-2"></i>
+                            <p class="text-sm text-gray-400">表面温度</p>
+                            <p id="modalTemperature" class="text-xl font-semibold"></p>
+                        </div>
+                        <div class="glass-effect p-4 rounded-xl text-center">
+                            <i class="fas fa-clock text-2xl text-accent mb-2"></i>
+                            <p class="text-sm text-gray-400">公转周期</p>
+                            <p id="modalOrbit" class="text-xl font-semibold"></p>
+                        </div>
+                        <div class="glass-effect p-4 rounded-xl text-center">
+                            <i class="fas fa-globe-americas text-2xl text-primary mb-2"></i>
+                            <p class="text-sm text-gray-400">直径</p>
+                            <p id="modalDiameter" class="text-xl font-semibold"></p>
+                        </div>
+                        <div class="glass-effect p-4 rounded-xl text-center">
+                            <i class="fas fa-weight text-2xl text-secondary mb-2"></i>
+                            <p class="text-sm text-gray-400">质量</p>
+                            <p id="modalMass" class="text-xl font-semibold"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-orbitron font-bold mb-3 text-starlight">基本特征</h3>
+                        <p id="modalDescription" class="text-gray-300 leading-relaxed"></p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-orbitron font-bold mb-3 text-accent">大气层</h3>
+                        <p id="modalAtmosphere" class="text-gray-300 leading-relaxed"></p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-orbitron font-bold mb-3 text-primary">表面特征</h3>
+                        <p id="modalSurface" class="text-gray-300 leading-relaxed"></p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-orbitron font-bold mb-3 text-secondary">探测历史</h3>
+                        <p id="modalExploration" class="text-gray-300 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 行星数据
+        const planetData = {
+            mercury: {
+                title: "水星",
+                image: "https://aka.doubaocdn.com/s/YQfR1w5fWw",
+                temperature: "427°C / -170°C",
+                orbit: "88天",
+                diameter: "4880公里",
+                mass: "3.30×10²³ kg",
+                description: "水星是太阳系中离太阳最近的行星，也是太阳系中最小的行星。它的直径约为4880公里，仅为地球的38%。水星的表面与月球相似，布满了密密麻麻的陨石坑，这是由于水星缺乏浓厚的大气层，无法像地球那样通过大气摩擦消耗陨石的能量。",
+                atmosphere: "水星有极稀薄的大气-外逸层，气压小于约0.5 nPa，由氢、氦、氧、钠、钙、钾、镁、硅和氢氧化物等元素组成。由于几乎没有大气层来保持热量，水星的表面昼夜温差很大，白天表面温度高达427°C，夜晚则降至-170°C。",
+                surface: "水星表面遍布环形山，其中最大的卡洛里盆地直径达1550公里。水星的地质在数十亿年来都处于非活动状态。在水星的极地有许多陨石撞击形成的深坑，而且由于地形原因，这些深坑底部永远无法被阳光照射到，温度极低，可能存在水冰。",
+                exploration: "水星因为温度高、速度快，成为了太阳系中探测次数最少的行星。直到1974年，水手10号探测器首次飞越水星，才让人类首次近距离看到水星的表面。2004年发射的信使号探测器在2011年进入水星轨道，对水星进行了详细的探测，发现水星拥有全球性磁场和铁质内核。"
+            },
+            venus: {
+                title: "金星",
+                image: "https://aka.doubaocdn.com/s/D8Mj1w5fWu",
+                temperature: "465°C",
+                orbit: "224.7天",
+                diameter: "12104公里",
+                mass: "4.87×10²⁴ kg",
+                description: "金星是太阳系中离太阳第二近的行星，常被称为地球的'姐妹行星'，因其大小和质量与地球相近。金星的直径约为12104公里，质量约为地球的81.5%。然而，金星的环境却与地球截然不同，堪称太阳系中最恶劣的地表环境。",
+                atmosphere: "金星拥有太阳系最浓密的大气层，主要成分是二氧化碳（96.5%），表面大气压是地球的92倍，相当于地球海洋900米深处的压力。强烈的温室效应使其表面温度高达465°C，足以熔化铅、锌等金属，比离太阳更近的水星还要酷热。",
+                surface: "金星表面85%都被火山岩浆覆盖，到处都是火山，包括盾状火山和穹丘火山。由于浓厚的大气层保护，金星表面的小陨石坑很少，因为小陨石在穿过厚厚的大气层时就被烧掉了。金星的自转是逆向的，自东向西旋转，而且自转周期比公转周期还长。",
+                exploration: "苏联和美国都曾向金星发射过多个探测器。1967年，苏联的金星4号探测器首次成功抵达金星大气层。1970年，金星7号成为第一个成功登陆金星表面的探测器，但仅存活了23分钟。近年来，日本的破晓号和欧洲的金星快车等探测器也对金星进行了详细观测。"
+            },
+            earth: {
+                title: "地球",
+                image: "https://aka.doubaocdn.com/s/hkgB1w5fWw",
+                temperature: "14°C",
+                orbit: "365.25天",
+                diameter: "12756公里",
+                mass: "5.97×10²⁴ kg",
+                description: "地球是太阳系中离太阳第三近的行星，目前已知唯一存在生命的天体。地球的直径约为12756公里，表面约29.2%为陆地，70.8%被海洋和其他水体覆盖。地球大约诞生于45.4亿年前，42亿年前形成海洋，40亿年前形成稳定固态地壳。",
+                atmosphere: "地球大气层主要由氮（78%）、氧（21%）和氩（1%）等气体组成，能够产生压力，吸收大部分流星体和紫外线太阳辐射，通过保温使地表变暖，使生命和液态水存在于地球表面。大气层中的臭氧层能够保护地球上的生命免受有害紫外线的伤害。",
+                surface: "地球表面具有多样化的地貌，包括山脉、平原、沙漠、森林、海洋等。地球的外层由数个构造板块组成，内部保持活跃，表面不断发生变化。地球拥有一颗天然卫星——月球，月球对地球的潮汐现象产生重要影响。",
+                exploration: "人类对地球的探索从未停止。从早期的地理大发现到现代的卫星遥感技术，人类对地球的认识不断深入。现在，我们有全球定位系统（GPS）、气象卫星、地球观测卫星等先进技术，能够实时监测地球的气候变化、地质活动和生态环境。"
+            },
+            mars: {
+                title: "火星",
+                image: "https://aka.doubaocdn.com/s/EOdw1w5fWv",
+                temperature: "-63°C",
+                orbit: "687天",
+                diameter: "6792公里",
+                mass: "6.42×10²³ kg",
+                description: "火星是太阳系中离太阳第四近的行星，被称为'红色星球'，因为其表面被赤铁矿（氧化铁）覆盖而呈现橘红色。火星的直径约为6792公里，约为地球的一半，质量约为地球的11%。火星是人类最有可能移居的行星。",
+                atmosphere: "火星大气非常稀薄，表面大气压不足地球的1%，主要成分是二氧化碳（95.3%），氧气含量仅0.13%。火星缺乏全球性磁场，太阳风可直接轰击地表，不仅剥离大气粒子，还带来远超地球的辐射剂量。平均温度低至-63°C，昼夜温差可达60-80°C。",
+                surface: "火星表面有太阳系最高的山峰——奥林帕斯山（高达27公里）和最大的峡谷——水手号峡谷（长4000公里）。火星的两极有由水冰和干冰组成的极冠，会随着季节变化而扩大或缩小。近年来的探测发现火星表面存在液态水的证据。",
+                exploration: "火星是太阳系中被探测次数最多的行星之一。从1960年代开始，苏联和美国就向火星发射了多个探测器。目前，火星上有多个探测器在工作，包括美国的好奇号、毅力号火星车，以及中国的祝融号火星车。这些探测器正在寻找火星上曾经存在生命的证据。"
+            },
+            jupiter: {
+                title: "木星",
+                image: "https://aka.doubaocdn.com/s/qEsi1w5fWy",
+                temperature: "-145°C",
+                orbit: "11.86年",
+                diameter: "139822公里",
+                mass: "1.90×10²⁷ kg",
+                description: "木星是太阳系中体积最大、自转最快的行星。它的直径约139822公里，质量是太阳系其他行星质量总和的2.5倍。木星主要由氢和氦组成，被称为气态巨行星。木星被认为是太阳系的'清洁工'，它的强大引力帮助清除了许多可能撞击地球的小行星和彗星。",
+                atmosphere: "木星大气层厚度约5000公里，云层按成分分为氨冰（白色）、硫化氢铵（棕黄色）和水冰（深色）三层，形成明暗相间的条纹。木星上风速可达每小时数百公里，其中最著名的是大红斑，这是一个已持续至少350年的反气旋风暴，直径足以吞没两个地球。",
+                surface: "木星没有固态表面，主要由液态和气态物质组成。木星内部结构分为外层的分子氢、液态金属氢层和岩石核心。木星的内部压力极高，温度可达30000°C。木星拥有太阳系中最强的磁场，是地球磁场的14倍。",
+                exploration: "1979年，旅行者1号和2号探测器首次近距离观测木星，发现了木星的环系和木卫一上的火山活动。1995年，伽利略号探测器进入木星轨道，对木星及其卫星进行了长达8年的详细观测。2016年，朱诺号探测器进入木星轨道，继续对木星进行深入研究。"
+            },
+            saturn: {
+                title: "土星",
+                image: "https://aka.doubaocdn.com/s/GmfU1w5fWu",
+                temperature: "-180°C",
+                orbit: "29.46年",
+                diameter: "120536公里",
+                mass: "5.68×10²⁶ kg",
+                description: "土星是太阳系中离太阳第六近的行星，是太阳系第二大气态巨行星。土星的直径约120536公里，质量约为地球的95倍。土星以其美丽的行星环而闻名，这些环主要由冰粒子和少量岩石碎片组成。土星的密度极低，甚至比水还小。",
+                atmosphere: "土星大气层主要由氢（96.3%）和氦（3.25%）组成，表面风速高达1800公里/小时，远超地球上的飓风。大气温度极低，表面平均温度约为-140°C，两极甚至可达-180°C。土星的大气中同样分布着明暗相间的条带状云系。",
+                surface: "土星没有固态表面，内部结构与木星相似，核心由岩石和冰构成，外层包裹着液态金属氢和氢氦气体层。土星拥有数千个美丽的环，这些环主要由水冰组成，大小从微米到米不等。土星的环系是太阳系中最壮观、最复杂的。",
+                exploration: "1979年，旅行者1号和2号探测器首次近距离观测土星，发现了土星的环缝和新的卫星。1997年，卡西尼号探测器发射升空，2004年进入土星轨道，对土星及其环系和卫星进行了长达13年的详细观测，获得了大量珍贵数据。"
+            },
+            uranus: {
+                title: "天王星",
+                image: "https://aka.doubaocdn.com/s/fZhV1w5fXI",
+                temperature: "-220°C",
+                orbit: "84年",
+                diameter: "50724公里",
+                mass: "8.68×10²⁵ kg",
+                description: "天王星是太阳系中离太阳第七近的行星，是太阳系第三大行星。天王星的直径约为50724公里，质量约为地球的14.5倍。天王星最独特的特征是它的自转轴倾斜角达到98度，几乎是横躺着围绕太阳公转的，被称为'躺平行星'。",
+                atmosphere: "天王星的大气层主要由氢（83%）、氦（15%）和甲烷（2.3%）组成。甲烷在大气中的吸收光谱中，在波长高于600nm时产生明显的吸收带，这是导致天王星呈现蓝绿色外观的主要原因。天王星的大气温度极低，平均温度约为-220°C。",
+                surface: "天王星被归类为冰巨星，内部主要由水、氨和甲烷的'冰'组成，这些物质在高压低温下形成固态或超临界流体状态。天王星拥有微弱的环系，这些环是在1977年被发现的。天王星拥有27颗已知卫星，其中最大的是泰坦尼亚和奥伯龙。",
+                exploration: "1781年，英国天文学家威廉·赫歇尔用望远镜发现了天王星，这是近代首颗通过望远镜而非肉眼发现的行星。1986年，旅行者2号探测器飞掠天王星，这是迄今为止唯一一次近距离探测天王星的任务，发现了天王星的环系和新的卫星。"
+            },
+            neptune: {
+                title: "海王星",
+                image: "https://aka.doubaocdn.com/s/Jex11w5fXH",
+                temperature: "-218°C",
+                orbit: "165年",
+                diameter: "49244公里",
+                mass: "1.02×10²⁶ kg",
+                description: "海王星是太阳系中离太阳最远的行星，是太阳系第四大行星。海王星的直径约为49244公里，质量约为地球的17倍。海王星是第一颗通过数学预测而非直接观测发现的行星，这是天体力学的重大成就。",
+                atmosphere: "海王星的大气层主要由氢（80%）、氦（19%）和甲烷（1.5-2%）组成。海王星标志性的深邃蓝色，正是其大气中甲烷吸收红光的结果。海王星拥有太阳系中最强的风，风速可达每小时2100公里，远超地球上的最强飓风。",
+                surface: "海王星也被归类为冰巨星，内部主要由水、氨和甲烷的'冰'组成，这些物质在高压下形成热的稠密流体。海王星拥有5个主要环和14颗已知卫星，其中最大的是海卫一。海卫一是太阳系中唯一拥有逆行轨道的大型卫星。",
+                exploration: "1846年，法国天文学家勒维耶通过数学计算预测了海王星的位置，随后德国天文学家伽勒在预测位置附近发现了这颗行星。1989年，旅行者2号探测器飞掠海王星，这是迄今为止唯一一次近距离探测海王星的任务，发现了海王星的大黑斑和新的卫星。"
+            }
+        };
+
+        // 滚动到指定区域
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // 打开行星详情模态框
+        function openPlanetModal(planetId) {
+            const planet = planetData[planetId];
+            if (!planet) return;
+
+            document.getElementById('modalTitle').textContent = planet.title;
+            document.getElementById('modalImage').src = planet.image;
+            document.getElementById('modalTemperature').textContent = planet.temperature;
+            document.getElementById('modalOrbit').textContent = planet.orbit;
+            document.getElementById('modalDiameter').textContent = planet.diameter;
+            document.getElementById('modalMass').textContent = planet.mass;
+            document.getElementById('modalDescription').textContent = planet.description;
+            document.getElementById('modalAtmosphere').textContent = planet.atmosphere;
+            document.getElementById('modalSurface').textContent = planet.surface;
+            document.getElementById('modalExploration').textContent = planet.exploration;
+
+            document.getElementById('planetModal').classList.remove('hidden');
+            document.getElementById('planetModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭行星详情模态框
+        function closePlanetModal() {
+            document.getElementById('planetModal').classList.add('hidden');
+            document.getElementById('planetModal').classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('planetModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePlanetModal();
+            }
+        });
+
+        // 键盘事件监听
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !document.getElementById('planetModal').classList.contains('hidden')) {
+                closePlanetModal();
+            }
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(15, 23, 42, 0.95)';
+            } else {
+                nav.style.background = 'rgba(15, 23, 42, 0.8)';
+            }
+        });
+
+        // 移动端菜单切换
+        const mobileMenuBtn = document.querySelector('.md\\:hidden button');
+        const mobileMenu = document.querySelector('.hidden.md\\:flex');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('flex');
+                mobileMenu.classList.toggle('flex-col');
+                mobileMenu.classList.toggle('absolute');
+                mobileMenu.classList.toggle('top-full');
+                mobileMenu.classList.toggle('left-0');
+                mobileMenu.classList.toggle('w-full');
+                mobileMenu.classList.toggle('bg-cosmic');
+                mobileMenu.classList.toggle('py-4');
+                mobileMenu.classList.toggle('space-y-4');
+            });
+        }
+    </script>
+</body>
+</html>
